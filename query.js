@@ -16,7 +16,7 @@ module.exports = (query, targetProperty, range) => {
                 query['updateDate'] = { $gt: moment().startOf('day').toDate(), $lte: moment().endOf('day').toDate() };
                 break;
             case 'week':
-                query['updateDate'] = { $gt: moment().startOf('week').toDate(), $lte: moment().endOf('week').toDate() };
+                query['updateDate'] = { $gt: moment().startOf('isoWeek').toDate(), $lte: moment().endOf('isoWeek').toDate() };
                 break;
             case 'month':
                 query['updateDate'] = { $gt: moment().startOf('month').toDate(), $lte: moment().endOf('month').toDate() };
@@ -25,11 +25,14 @@ module.exports = (query, targetProperty, range) => {
                 query['updateDate'] = { $gt: moment().startOf('year').toDate(), $lte: moment().endOf('day').toDate() };
                 break;
             case 'all':
+                delete query.updateDate;
                 break;
             default:
                 return reject("Invalid range");
 
         }
+
+        console.log("Data requested:", JSON.stringify(query));
 
         anyModel.find(query).then((assets) => {
 

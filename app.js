@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const moment = require('moment');
+const tz = require('moment-timezone');
 const express = require('express');
 const app = express();
 
@@ -34,10 +36,23 @@ const insts = [
 ];
 
 
+app.use((req, res, next) => {
+
+    res.resolve = (payload) => {
+        payload.UTCdateTime = moment();
+        payload.dateTime = moment().tz('Europe/Rome');
+        return res.json(payload);
+    };
+
+    next();
+});
+
 app.get('/transactions/:range', function (req, res) {
 
     let n = 0;
     let response = {};
+
+    console.log("Transactions endpoint called.", req.params);
 
     insts.forEach(inst => {
 
@@ -46,7 +61,7 @@ app.get('/transactions/:range', function (req, res) {
 
             n++;
             if(n >= insts.length)
-                return res.json(response);
+                return res.resolve(response);
 
         }).catch((err) => {
             console.log(err);
