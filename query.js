@@ -1,12 +1,26 @@
 const mongoose = require('mongoose');
 const moment = require('moment');
+const cache = require('./cache');
+const crypto = require('crypto');
 
 module.exports = (query, targetProperty, range) => {
 
     return new Promise((resolve, reject)=>{
 
+        const cacheId = crypto.createHash('md5').update(JSON.stringify(query) + targetProperty + range).digest("hex");
+        const cached = cache.get(cacheId);
+
+        if(cached) {
+            console.log("Resolving from cache...");
+            return resolve(cached);
+        }
+
+        console.log("Resolving from DB...");
+
         const schema = {};
-        schema[targetProperty] = Number;
+
+        if(targetProperty)
+            schema[targetProperty] = Number;
 
         const anyModel = mongoose.model('Any' + Math.random(), new mongoose.Schema( schema, { collection: "assets" } ));
 
@@ -37,12 +51,20 @@ module.exports = (query, targetProperty, range) => {
         anyModel.find(query).then((assets) => {
 
             let total = 0;
+            let result;
 
-            assets.forEach(asset => {
-                total += asset[targetProperty];
-            });
+            if(targetProperty) {
+                assets.forEach(asset => {
+                    total += asset[targetProperty];
+                });
 
-            resolve(Math.round(total/100));
+                result = Math.round(total / 100);
+            } else {
+                result = assets.length;
+            }
+
+            cache.set(cacheId, result, range === 'today' ? 300000 : 93600000);
+            return resolve(result);
 
         }).catch((err) => {
             reject(err);

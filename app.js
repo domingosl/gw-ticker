@@ -32,15 +32,30 @@ connection
 const insts = [
     { name: "card_all", query: { _class: "contribution", succeeded : true, completed : true }, target: "amount" },
     { name: "withdrawal_all", query: { _class: "withdrawalContribution", mangopayStatus : "ACCEPTED" }, target: "amount" },
-    { name: "cash_all", query: { _class: "cashContribution", state : "completed" }, target: "amount" }
+    { name: "cash_all", query: { _class: "cashContribution", state : "completed" }, target: "amount" },
+    { name: "new_users", query: { _class: "user" }, target: null },
+    { name: "new_wallets", query: { _class: "wallet" }, target: null },
+    { name: "new_lists", query: { _class: "listWallet" }, target: null },
 ];
 
 
 app.use((req, res, next) => {
 
     res.resolve = (payload) => {
-        payload.UTCdateTime = moment();
-        payload.dateTime = moment().tz('Europe/Rome');
+
+        let timeObj = moment().tz('Europe/Rome');
+
+        payload.dateTimeIT = {
+            hours: timeObj.format('HH'),
+            minutes: timeObj.format('mm'),
+            seconds: timeObj.format('ss'),
+            day: timeObj.format('DD'),
+            month: timeObj.format('MM'),
+            year: timeObj.format('YYYY')
+        };
+
+        //payload.dateTimeIT = timeObj.format('X');
+
         return res.json(payload);
     };
 
@@ -56,8 +71,9 @@ app.get('/transactions/:range', function (req, res) {
 
     insts.forEach(inst => {
 
-        query(inst.query, inst.target, req.params.range).then((result)=>{
-            response[inst.name] = result + " EUR";
+        query(inst.query, inst.target, req.params.range).then((result) => {
+
+            response[inst.name] = result;
 
             n++;
             if(n >= insts.length)
