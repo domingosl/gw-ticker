@@ -30,7 +30,7 @@ connection
     });
 
 const insts = [
-    { name: "card_all", query: { _class: "contribution", succeeded : true, completed : true }, target: "amount" },
+    { name: "card_all", query: { _class: "contribution", succeeded : 1, completed : 1 }, target: "amount" },
     { name: "withdrawal_all", query: { _class: "withdrawalContribution", mangopayStatus : "ACCEPTED" }, target: "amount" },
     { name: "cash_all", query: { _class: "cashContribution", state : "completed" }, target: "amount" },
     { name: "new_users", query: { _class: "user" }, target: null },
