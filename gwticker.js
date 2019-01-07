@@ -32,7 +32,7 @@ connection
 const insts = [
     { name: "card_all", query: { _class: "contribution", succeeded : 1, completed : 1 }, target: "amount", timeProperty: "updateDate" },
     { name: "withdrawal_all", query: { _class: "withdrawalContribution", mangopayStatus : "ACCEPTED" }, target: "amount", timeProperty: "updateDate" },
-    { name: "cash_all", query: { _class: "cashContribution", state : "completed" }, target: "amount" },
+    { name: "cash_all", query: { _class: "cashContribution", state : "completed" }, target: "amount", timeProperty: "updateDate" },
     { name: "new_users", query: { _class: "user" }, target: null, timeProperty: "creationDate" },
     { name: "new_wallets", query: { _class: "wallet" }, target: null, timeProperty: "creationDate" },
     { name: "new_lists", query: { _class: "listWallet" }, target: null, timeProperty: "creationDate" },
