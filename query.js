@@ -3,7 +3,7 @@ const moment = require('moment');
 const cache = require('./cache');
 const crypto = require('crypto');
 
-module.exports = (query, targetProperty, range) => {
+module.exports = (query, targetProperty, range, timeProperty) => {
 
     return new Promise((resolve, reject)=>{
 
@@ -27,19 +27,19 @@ module.exports = (query, targetProperty, range) => {
         switch (range) {
 
             case 'today':
-                query['updateDate'] = { $gt: moment().startOf('day').toDate(), $lte: moment().endOf('day').toDate() };
+                query[timeProperty] = { $gt: moment().startOf('day').toDate(), $lte: moment().endOf('day').toDate() };
                 break;
             case 'week':
-                query['updateDate'] = { $gt: moment().startOf('isoWeek').toDate(), $lte: moment().endOf('isoWeek').toDate() };
+                query[timeProperty] = { $gt: moment().startOf('isoWeek').toDate(), $lte: moment().endOf('isoWeek').toDate() };
                 break;
             case 'month':
-                query['updateDate'] = { $gt: moment().startOf('month').toDate(), $lte: moment().endOf('month').toDate() };
+                query[timeProperty] = { $gt: moment().startOf('month').toDate(), $lte: moment().endOf('month').toDate() };
                 break;
             case 'ytd':
-                query['updateDate'] = { $gt: moment().startOf('year').toDate(), $lte: moment().endOf('day').toDate() };
+                query[timeProperty] = { $gt: moment().startOf('year').toDate(), $lte: moment().endOf('day').toDate() };
                 break;
             case 'all':
-                delete query.updateDate;
+                delete query[timeProperty];
                 break;
             default:
                 return reject("Invalid range");

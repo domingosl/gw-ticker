@@ -30,12 +30,12 @@ connection
     });
 
 const insts = [
-    { name: "card_all", query: { _class: "contribution", succeeded : 1, completed : 1 }, target: "amount" },
-    { name: "withdrawal_all", query: { _class: "withdrawalContribution", mangopayStatus : "ACCEPTED" }, target: "amount" },
+    { name: "card_all", query: { _class: "contribution", succeeded : 1, completed : 1 }, target: "amount", timeProperty: "updateDate" },
+    { name: "withdrawal_all", query: { _class: "withdrawalContribution", mangopayStatus : "ACCEPTED" }, target: "amount", timeProperty: "updateDate" },
     { name: "cash_all", query: { _class: "cashContribution", state : "completed" }, target: "amount" },
-    { name: "new_users", query: { _class: "user" }, target: null },
-    { name: "new_wallets", query: { _class: "wallet" }, target: null },
-    { name: "new_lists", query: { _class: "listWallet" }, target: null },
+    { name: "new_users", query: { _class: "user" }, target: null, timeProperty: "creationDate" },
+    { name: "new_wallets", query: { _class: "wallet" }, target: null, timeProperty: "creationDate" },
+    { name: "new_lists", query: { _class: "listWallet" }, target: null, timeProperty: "creationDate" },
 ];
 
 
@@ -71,7 +71,7 @@ app.get('/transactions/:range', function (req, res) {
 
     insts.forEach(inst => {
 
-        query(inst.query, inst.target, req.params.range).then((result) => {
+        query(inst.query, inst.target, req.params.range, inst.timeProperty).then((result) => {
 
             response[inst.name] = result;
 
