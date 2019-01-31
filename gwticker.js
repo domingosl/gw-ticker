@@ -3,6 +3,7 @@ const moment = require('moment');
 const tz = require('moment-timezone');
 const express = require('express');
 const app = express();
+const twoHundredCrowd = require('./twohundred-crowd');
 
 const query = require('./query');
 
@@ -25,7 +26,7 @@ connection
             mongoose.connect(dbUri);
         } else {
             console.log('Error while attempting to connect to database:', err.message);
-            process.exit();
+            //process.exit();
         }
     });
 
@@ -84,6 +85,18 @@ app.get('/transactions/:range', function (req, res) {
         });
 
     });
+
+
+});
+
+app.get('/200crowd', async function (req, res) {
+
+    const response = await twoHundredCrowd();
+
+    if(!response)
+        return res.status(500).send();
+
+    res.json(response);
 
 
 });
