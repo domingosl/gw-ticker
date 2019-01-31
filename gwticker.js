@@ -89,15 +89,13 @@ app.get('/transactions/:range', function (req, res) {
 
 });
 
-app.get('/200crowd', async function (req, res) {
+app.get('/200crowd', function (req, res) {
 
-    const response = await twoHundredCrowd();
-
-    if(!response)
+    twoHundredCrowd().then((response) => {
+        return res.json(response);
+    }).catch(() => {
         return res.status(500).send();
-
-    res.json(response);
-
+    });
 
 });
 
