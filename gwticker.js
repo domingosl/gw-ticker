@@ -3,6 +3,7 @@ const moment = require('moment');
 const tz = require('moment-timezone');
 const express = require('express');
 const app = express();
+const cors = require('cors');
 const twoHundredCrowd = require('./twohundred-crowd');
 
 const query = require('./query');
@@ -39,6 +40,7 @@ const insts = [
     { name: "new_lists", query: { _class: "listWallet" }, target: null, timeProperty: "creationDate" },
 ];
 
+app.use(cors());
 
 app.use((req, res, next) => {
 
