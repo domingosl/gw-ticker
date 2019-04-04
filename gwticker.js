@@ -4,6 +4,7 @@ const tz = require('moment-timezone');
 const express = require('express');
 const app = express();
 const twoHundredCrowd = require('./twohundred-crowd');
+const bodyParser = require('body-parser');
 
 const query = require('./query');
 
@@ -11,6 +12,9 @@ const query = require('./query');
 const dbUri = "mongodb://localhost:27017/growish-assets";
 
 mongoose.Promise = global.Promise;
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 const connection = mongoose.connect(dbUri, { useNewUrlParser: true });
 
@@ -96,6 +100,42 @@ app.get('/200crowd', function (req, res) {
     }).catch(() => {
         return res.status(500).send();
     });
+
+});
+
+
+let investorsMessage = "";
+
+app.post('/slack-hook/investors-message/', function (req, res) {
+
+
+    const authUsers = ['U51009S4A', 'U53S51SJZ'];
+
+    if(authUsers.indexOf(req.body.user_id) < 0)
+        return res.send("Utente non autorizzato al invio di messaggi");
+
+    if(req.body.text.length < 5 || req.body.text.length > 300)
+        return res.send("Il messaggio non può essere inferiore a 5 caratteri o superiore a 300");
+
+
+    investorsMessage = req.body.text;
+
+    res.send("Messaggio inviato agli investors!");
+
+
+});
+
+app.get('/lametric', function (req, res) {
+
+
+    return res.json({
+        "frames": [
+            {
+                "text": investorsMessage || "GROWISH",
+                "icon": "i27913"
+            }
+        ]
+    })
 
 });
 
