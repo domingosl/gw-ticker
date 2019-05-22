@@ -143,22 +143,46 @@ app.get('/lametric', function (req, res) {
                 return res.json({
                     "frames": [
                         {
-                            icon: "i5337",
-                            text: 'Utenti',
+                            icon: "a2147",
+                            text: 'Transato',
                             duration: 1000
-                        },
-                        {
-                            icon: null,
-                            text: String(response['new_users'])
                         },
                         {
                             icon: "a2147",
                             text: String(response['card_all'] + response['withdrawal_all'] + response['cash_all'])
                         },
                         {
+                            icon: null,
+                            text: 'Pagamenti',
+                            duration: 1000
+                        },
+                        {
+                            icon: null,
+                            text: "soon!"
+                        },
+                        {
+                            icon: "i5337",
+                            text: 'Utenti',
+                            duration: 1000
+                        },
+                        {
+                            icon: "i5337",
+                            text: String(response['new_users']),
+                            duration: 5000
+                        },
+                        {
                             text: investorsMessage || "GROWISH",
                             icon: "i27913"
-                        }
+                        },
+                        {
+                            icon: null,
+                            text: 'Partners',
+                            duration: 1000
+                        },
+                        {
+                            icon: null,
+                            text: "soon!"
+                        },
                     ]
                 })
 
