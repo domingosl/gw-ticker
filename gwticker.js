@@ -134,7 +134,7 @@ app.get('/lametric', function (req, res) {
 
     insts.forEach(inst => {
 
-        query(inst.query, inst.target, 'today', inst.timeProperty).then((result) => {
+        query(inst.query, inst.target, 'month', inst.timeProperty).then((result) => {
 
             response[inst.name] = result;
 
@@ -144,6 +144,11 @@ app.get('/lametric', function (req, res) {
                     "frames": [
                         {
                             icon: "i5337",
+                            text: 'Utenti',
+                            duration: 1000
+                        },
+                        {
+                            icon: null,
                             text: String(response['new_users'])
                         },
                         {
