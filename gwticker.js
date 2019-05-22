@@ -129,23 +129,39 @@ app.post('/slack-hook/investors-message/', function (req, res) {
 
 app.get('/lametric', function (req, res) {
 
+    let n = 0;
+    let response = {};
 
-    return res.json({
-        "frames": [
-            {
-                icon: "i5337",
-                text: "0"
-            },
-            {
-                icon: "a2147",
-                text: "0"
-            },
-            {
-                text: investorsMessage || "GROWISH",
-                icon: "i27913"
-            }
-        ]
-    })
+    insts.forEach(inst => {
+
+        query(inst.query, inst.target, 'today', inst.timeProperty).then((result) => {
+
+            response[inst.name] = result;
+
+            n++;
+            if(n >= insts.length)
+                return res.json({
+                    "frames": [
+                        {
+                            icon: "i5337",
+                            text: String(response['new_users'])
+                        },
+                        {
+                            icon: "a2147",
+                            text: String(response['card_all'] + response['withdrawal_all'] + response['cash_all'])
+                        },
+                        {
+                            text: investorsMessage || "GROWISH",
+                            icon: "i27913"
+                        }
+                    ]
+                })
+
+        }).catch((err) => {
+            console.log(err);
+        });
+
+    });
 
 });
 
