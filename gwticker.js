@@ -197,7 +197,7 @@ app.get('/lametric', function (req, res) {
                         },
                         {
                             text: investorsMessage || "GROWISH",
-                            icon: null
+                            icon: "i27913"
                         }
                     ]
                 })
