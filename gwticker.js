@@ -1,11 +1,12 @@
-const mongoose = require('mongoose');
-const moment = require('moment');
-const tz = require('moment-timezone');
-const express = require('express');
-const app = express();
-const cors = require('cors');
-const twoHundredCrowd = require('./twohundred-crowd');
-const bodyParser = require('body-parser');
+const mongoose          = require('mongoose');
+const moment            = require('moment');
+const tz                = require('moment-timezone');
+const express           = require('express');
+const app               = express();
+const cors              = require('cors');
+const twoHundredCrowd   = require('./twohundred-crowd');
+const bodyParser        = require('body-parser');
+const applicationState  = require('./application-state');
 
 const query = require('./query');
 
@@ -36,12 +37,22 @@ connection
     });
 
 const insts = [
-    { name: "card_all", query: { _class: "contribution", succeeded : 1, completed : 1 }, target: "amount", timeProperty: "updateDate" },
-    { name: "withdrawal_all", query: { _class: "withdrawalContribution", mangopayStatus : "ACCEPTED" }, target: "amount", timeProperty: "updateDate" },
-    { name: "cash_all", query: { _class: "cashContribution", state : "completed" }, target: "amount", timeProperty: "updateDate" },
-    { name: "new_users", query: { _class: "user" }, target: null, timeProperty: "creationDate" },
-    { name: "new_wallets", query: { _class: "wallet" }, target: null, timeProperty: "creationDate" },
-    { name: "new_lists", query: { _class: "listWallet" }, target: null, timeProperty: "creationDate" },
+    { name: "card_all", query: { _class: "contribution", succeeded : 1, completed : 1, status: 1 }, target: "amount", timeProperty: "updateDate" },
+    { name: "withdrawal_all", query: { _class: "withdrawalContribution", mangopayStatus : "ACCEPTED", status: 1 }, target: "amount", timeProperty: "updateDate" },
+    { name: "cash_all", query: { _class: "cashContribution", state : "completed", status: 1 }, target: "amount", timeProperty: "updateDate" },
+    { name: "new_users", query: { _class: "user", status: 1 }, target: null, timeProperty: "creationDate" },
+    { name: "new_wallets", query: { _class: "wallet", status: 1 }, target: null, timeProperty: "creationDate" },
+    { name: "new_lists", query: { _class: "listWallet", status: 1 }, target: null, timeProperty: "creationDate" },
+];
+
+const instsInvestors = [
+    { name: "card_all", query: { _class: "contribution", succeeded : 1, completed : 1, status: 1 }, target: "amount", timeProperty: "updateDate" },
+    { name: "withdrawal_all", query: { _class: "withdrawalContribution", mangopayStatus : "ACCEPTED", status: 1 }, target: "amount", timeProperty: "updateDate" },
+    { name: "cash_all", query: { _class: "cashContribution", state : "completed", status: 1 }, target: "amount", timeProperty: "updateDate" },
+    { name: "new_users", query: { _class: "user", status: 1 }, target: null, timeProperty: "creationDate" },
+    { name: "withdrawal_out_all", query: { _class: "withdrawal", succeeded : 1, completed : 1, status: 1 }, target: "amount", timeProperty: "updateDate" },
+    { name: "transfer", query: { _class: "transfer", status: 1 }, target: "amount", timeProperty: "creationDate" },
+    { name: "merchant", query: { $or: [{_class: 'partner'}, {_class: 'agency'}], status: 1 }, target: null, timeProperty: "creationDate" },
 ];
 
 app.use(cors());
@@ -106,7 +117,7 @@ app.get('/200crowd', function (req, res) {
 });
 
 
-let investorsMessage = "";
+let investorsMessage = applicationState.get('investorMessage');
 
 app.post('/slack-hook/investors-message/', function (req, res) {
 
@@ -121,6 +132,7 @@ app.post('/slack-hook/investors-message/', function (req, res) {
 
 
     investorsMessage = req.body.text;
+    applicationState.set('investorMessage', investorsMessage);
 
     res.send("Messaggio inviato agli investors!");
 
@@ -132,33 +144,33 @@ app.get('/lametric', function (req, res) {
     let n = 0;
     let response = {};
 
-    insts.forEach(inst => {
+    instsInvestors.forEach(inst => {
 
         query(inst.query, inst.target, 'month', inst.timeProperty).then((result) => {
 
             response[inst.name] = result;
 
             n++;
-            if(n >= insts.length)
+            if(n >= instsInvestors.length)
                 return res.json({
                     "frames": [
                         {
                             icon: "a2147",
-                            text: 'Transato',
+                            text: 'TRANSAC',
                             duration: 1000
                         },
                         {
                             icon: "a2147",
-                            text: String(response['card_all'] + response['withdrawal_all'] + response['cash_all'])
+                            text: String(response['card_all'] + response['withdrawal_all'] + response['cash_all'] + response['transfer'] + response['withdrawal_out_all'])
                         },
                         {
-                            icon: null,
-                            text: 'Pagamenti',
+                            icon: "a29015",
+                            text: 'PAY-INS',
                             duration: 1000
                         },
                         {
-                            icon: null,
-                            text: "soon!"
+                            icon: "a29015",
+                            text: String(response['card_all'] + response['withdrawal_all'] + response['cash_all'])
                         },
                         {
                             icon: "i5337",
@@ -171,18 +183,18 @@ app.get('/lametric', function (req, res) {
                             duration: 5000
                         },
                         {
-                            text: investorsMessage || "GROWISH",
-                            icon: "i27913"
-                        },
-                        {
-                            icon: null,
-                            text: 'Partners',
+                            icon: "i20578",
+                            text: 'MERCH',
                             duration: 1000
                         },
                         {
-                            icon: null,
-                            text: "soon!"
+                            icon: "i20578",
+                            text: String(response['merchant'])
                         },
+                        {
+                            text: investorsMessage || "GROWISH",
+                            icon: "i27913"
+                        }
                     ]
                 })
 

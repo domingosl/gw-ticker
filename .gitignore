@@ -1,2 +1,4 @@
 node_modules
 .idea
+application-state.json
+.DS_Store
