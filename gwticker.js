@@ -155,6 +155,10 @@ app.get('/lametric', function (req, res) {
                 return res.json({
                     "frames": [
                         {
+                            text: "GROWISH",
+                            icon: "i27913"
+                        },
+                        {
                             icon: "a2147",
                             text: 'TRNS',
                             duration: 1000
@@ -193,7 +197,7 @@ app.get('/lametric', function (req, res) {
                         },
                         {
                             text: investorsMessage || "GROWISH",
-                            icon: "i27913"
+                            icon: null
                         }
                     ]
                 })
