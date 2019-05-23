@@ -134,7 +134,7 @@ app.post('/slack-hook/investors-message/', function (req, res) {
     investorsMessage = req.body.text;
     applicationState.set('investorMessage', investorsMessage);
 
-    res.send("Messaggio inviato agli investors!");
+    res.send("Messaggio inviato agli investors: " + investorsMessage);
 
 
 });
