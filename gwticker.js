@@ -156,7 +156,7 @@ app.get('/lametric', function (req, res) {
                     "frames": [
                         {
                             icon: "a2147",
-                            text: 'TRANSAC',
+                            text: 'TRNS',
                             duration: 1000
                         },
                         {
