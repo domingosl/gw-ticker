@@ -33,7 +33,10 @@ module.exports = (query, targetProperty, range, timeProperty) => {
                 query[timeProperty] = { $gt: moment().startOf('isoWeek').toDate(), $lte: moment().endOf('isoWeek').toDate() };
                 break;
             case 'month':
-                query[timeProperty] = { $gt: moment().startOf('month').toDate(), $lte: moment().endOf('month').toDate() };
+                if(moment().isSame(moment().startOf('month'), 'day'))
+                    query[timeProperty] = { $gt: moment().subtract(1, 'months').startOf('month').toDate(), $lte: moment().subtract(1, 'months').endOf('month').toDate() };
+                else
+                    query[timeProperty] = { $gt: moment().startOf('month').toDate(), $lte: moment().endOf('month').toDate() };
                 break;
             case 'ytd':
                 query[timeProperty] = { $gt: moment().startOf('year').toDate(), $lte: moment().endOf('day').toDate() };

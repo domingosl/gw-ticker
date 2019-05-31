@@ -159,18 +159,16 @@ app.get('/lametric', function (req, res) {
                             icon: "i27913"
                         },
                         {
-                            icon: "a2147",
-                            text: 'TRNS',
-                            duration: 1000
+                            icon: "i616",
+                            text: 'TRNS'
                         },
                         {
-                            icon: "a2147",
+                            icon: "i616",
                             text: String(response['card_all'] + response['withdrawal_all'] + response['cash_all'] + response['transfer'] + response['withdrawal_out_all'])
                         },
                         {
                             icon: "a29015",
-                            text: 'PAY-INS',
-                            duration: 1000
+                            text: 'PAY-INS'
                         },
                         {
                             icon: "a29015",
@@ -178,18 +176,15 @@ app.get('/lametric', function (req, res) {
                         },
                         {
                             icon: "i5337",
-                            text: 'Utenti',
-                            duration: 1000
+                            text: 'Utenti'
                         },
                         {
                             icon: "i5337",
-                            text: String(response['new_users']),
-                            duration: 5000
+                            text: String(response['new_users'])
                         },
                         {
                             icon: "i20578",
-                            text: 'MERCH',
-                            duration: 1000
+                            text: 'MERCH'
                         },
                         {
                             icon: "i20578",
