@@ -66,7 +66,7 @@ module.exports = (query, targetProperty, range, timeProperty) => {
                 result = assets.length;
             }
 
-            cache.set(cacheId, result, range === 'today' ? 300000 : 93600000);
+            cache.set(cacheId, result, range === 'today' ? 300000 : 10800000);
             return resolve(result);
 
         }).catch((err) => {
