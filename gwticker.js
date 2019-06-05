@@ -183,14 +183,6 @@ app.get('/lametric', function (req, res) {
                             text: String(response['new_users'])
                         },
                         {
-                            icon: "i20578",
-                            text: 'MERCH'
-                        },
-                        {
-                            icon: "i20578",
-                            text: String(response['merchant'])
-                        },
-                        {
                             text: investorsMessage || "GROWISH",
                             icon: "i27913"
                         }
